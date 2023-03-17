@@ -28,4 +28,11 @@ public class Mapping {
     public void setMethod(String Method) {
         this.Method = Method;
     }
+    
+    public Mapping(String className, String Method) {
+        this.setClassName(className);
+        this.setMethod(Method);
+    }
+    
+    public Mapping(){}
 }

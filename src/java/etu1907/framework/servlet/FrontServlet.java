@@ -4,10 +4,13 @@
  * and open the template in the editor.
  */
 
-import etu1907.framework.Mapping;
+import etu1907.framework.*;
 import java.io.IOException;
 import java.io.PrintWriter;
+import static java.lang.System.out;
 import java.util.HashMap;
+import java.util.List;
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -19,6 +22,14 @@ import javax.servlet.http.HttpServletResponse;
 public class FrontServlet extends HttpServlet {
 
     HashMap<String,Mapping> MappingUrl; 
+
+    public void init() throws ServletException{
+      try{
+          String ok = getServletContext().getRealPath("/");   
+          
+         MappingUrl = Utilitaire.getHashMap(ok,"model","MyAnnotation"); 
+       }catch(Exception e){System.out.println((e));}
+    }
     
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -35,15 +46,38 @@ public class FrontServlet extends HttpServlet {
             out.println("<h1>Servlet FrontServlet at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
+          
             
             Utilitaire appelUtilitaire = new Utilitaire();
             String urlPath = request.getPathInfo();
+
             
             String[] Response = appelUtilitaire.RecupererString(urlPath) ;
-            for(int i = 0 ; i < Response.length ; i++)
-            {
-                out.println(Response[i]);
-            }
+//            for(int i = 0 ; i < Response.length ; i++)
+//            {
+//                out.println(Response[i]);
+//            }
+            
+            try{
+                
+                String[] ValeurURL = appelUtilitaire.RecupererString(urlPath) ;
+                for(String i : MappingUrl.keySet()){
+                    for(int j = 0 ; j < ValeurURL.length ; j++ ){ 
+                        if(ValeurURL[j].equals(i))
+                        {
+                            out.println("<p>");
+                            out.println("La methode qui a cette valeur est :"+MappingUrl.get(i).getMethod());  
+                            out.println("</p>");
+                            out.println("La class ou se trouve cette method est :"+MappingUrl.get(i).getClassName());
+                        }else{
+                            out.print("hh");
+                        }
+
+                    }
+                }
+                
+//                out.println(Utilitaire.GetAllMethod(ok,"model","MyAnnotation").get(0));
+            }catch(Exception e){out.print(e);}
         }
     }
 
